@@ -1,0 +1,50 @@
+<!--==================== 
+nombre de archivo: roomList.html
+descripción: Pantalla de lista de salas.
+creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
+=====================-->
+
+
+<template name="roomList">
+	<div id="panelAdmin">
+		<a href="#"><i id="menuButton" class="material-icons" style="color: black;">menu</i></a>
+		{{#if loading}}
+			{{> loadScreen}}
+		{{/if}}
+		<div id="contentWrapper">
+			<div class="form-wrapper">
+
+				<h1>Lista de Salas</h1>
+				<p>Sistema para ver Calendario de todas las salas.</p>
+
+				{{#each rooms}}
+				<a id="roomItem" href="#"><div class="roomItem">
+					<p name="username" style="display: none;">{{username}}</p>
+					<h2 class="name">{{username}}</h2>
+					<h2 class="numpeople"><i class="material-icons" style="color: black;">today</i></h2>
+				</div></a>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+
+	<div id="myModal" class="modal">
+		<div class="modal-content" style="background-color: white;">
+			<p class="close">&times;</p>
+			<div id="popupCalendar"></div>
+		</div>
+	</div>
+
+	<script>
+		var modal = document.getElementById('myModal');
+		var span = document.getElementsByClassName("close")[0];
+		span.onclick = function() {
+		    modal.style.display = "none";
+		}
+		window.onclick = function(event) {
+		    if (event.target == modal) {
+		        modal.style.display = "none";
+		    }
+		}
+	</script>
+</template>

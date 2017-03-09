@@ -1,0 +1,165 @@
+<!--==================== 
+nombre de archivo: adminPanel.html
+descripción: Panel de administrador.
+creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
+=====================-->
+
+
+<template name="adminPanel">
+<div id="panelAdmin">
+	<a href="#"><i id="menuButton" class="material-icons" style="color: black;">menu</i></a>
+	<div id="contentWrapper">
+		<div class="form-wrapper">
+
+			<h1>Panel del Administrador</h1>
+			<p>Panel para agregar o eliminar usuarios de administrador y cuentas de sala.</p>
+
+			<!-- ======================== -->
+			<!--    Paneles de control    -->
+			<!-- ======================== -->
+
+			<div class="itemManager">
+				<h2>Administradores</h2>
+				{{#each admins}}
+				<form>
+					<div class="input-group">
+
+						<!-- Campos de control -->
+						<input name="action" value="remove" type="hidden">
+						<input name="uName" value="{{username}}" type="hidden">
+						<input name="type" value="admin" type="hidden">
+
+						<input name="user" value="{{fullName}} - {{username}}" type="text" class="form-control" disabled>
+						<input type="submit" value="&times;">
+		        	</div>
+		        </form>
+				{{/each}}
+
+				<form>
+					<div class="input-group">
+
+						<!-- Campos de control -->
+						<input name="action" value="add" type="hidden">
+						<input name="type" value="admin" type="hidden">
+
+						<input name="uName" value="" type="text" placeholder="Usuario Administrador" class="form-control">
+						<input value="+" type="submit" style="background-color: green;">
+					</div>
+				</form>
+			</div>
+
+
+			<div class="itemManager">
+				<h2>Salas</h2>
+				{{#each rooms}}
+				<form>
+					<div class="input-group">
+
+						<!-- Campos de control -->
+						<input name="action" value="remove" type="hidden">
+						<input name="uName" value="{{username}}" type="hidden">
+						<input name="type" value="room" type="hidden">
+
+						<input name="user" value="{{roomname}} - {{username}}" type="text" class="form-control" disabled>
+						<input type="submit" value="&times;">
+		        	</div>
+		        </form>
+				{{/each}}
+				<button id="addRoom">Agregar Sala</button>
+			</div>
+
+
+			<div class="itemManager">
+				<h2>Sedes</h2>
+				{{#each sedes}}
+				<form>
+					<div class="input-group">
+
+						<!-- Campos de control -->
+						<input name="action" value="remove" type="hidden">
+						<input name="uName" value="{{_id}}" type="hidden">
+						<input name="type" value="sede" type="hidden">
+
+						<input name="user" value="{{name}} - {{country}}" type="text" class="form-control" disabled>
+						<input type="submit" value="&times;">
+		        	</div>
+		        </form>
+				{{/each}}
+				<button id="addSede">Agregar Sede</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- ==================== -->
+<!--    Modals            -->
+<!-- ==================== -->
+<div id="rooms-modal" class="modal">
+	<div class="modal-content" style="max-width: 400px;">
+		
+		<p class="close">&times;</p>
+		
+		<h1>Agregar Sala</h1>
+		<form id="roomForm">
+			<input name="user" value="" type="text" placeholder="Usuario de Sala" class="form-style">
+			<input name="admin" value="" type="text" placeholder="Usuario de Administrador" class="form-style">
+			<input name="capacity" value="" type="number" pattern="\d*" min="0" placeholder="Capacidad" class="form-style">
+			<select name="sede" placeholder="Sede">
+				<option value="" disabled selected>Seleccionar Sede</option>
+				{{#each sedes}}
+					<option value="{{_id}}">{{name}}</option>
+				{{/each}}
+			</select>
+			<label style="margin-left: 2px"><input style="margin-top: 20px; margin-bottom: 20px; margin-right: 5px;" type="checkbox" name="hasVideo" value="hasVideo">Tiene Video Conferencia?</label>
+			<input style="width: 100%;" class="submit" value="Agregar Sala" type="submit">
+			<label class="fileContainer">
+				<span>Agregar Salas por CSV</span>
+				<input name="salaMasa" type="file" />
+			</label>
+		</form>
+	</div>
+</div>
+
+
+
+
+<div id="sede-modal" class="modal">
+	<div class="modal-content" style="max-width: 400px;">
+		
+		<p class="close">&times;</p>
+		
+		<h1>Agregar Sede</h1>
+		<form id="sedeForm">
+			<input name="name" value="" type="text" placeholder="Nombre de Sede" class="form-style">
+			<input name="country" value="" type="text" placeholder="País" class="form-style">
+			<input name="city" value="" type="text" placeholder="Ciudad" class="form-style">
+			<input style="width: 100%;" class="submit" value="Agregar Sede" type="submit">
+		</form>
+	</div>
+</div>
+
+
+
+
+<script>
+var modal = document.getElementById('rooms-modal');
+var modalSede = document.getElementById('sede-modal');
+var span = document.getElementsByClassName("close")[0];
+span.onclick = function() {
+    modal.style.display = "none";
+}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+var modalSede = document.getElementById('sede-modal');
+var spanSede = document.getElementsByClassName("close")[1];
+spanSede.onclick = function() {
+    modalSede.style.display = "none";
+}
+
+</script>
+</template>

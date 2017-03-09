@@ -1,0 +1,71 @@
+<!--==================== 
+nombre de archivo: roomCalendar.html
+descripción: Pantalla de Disponibilidad de Sala.
+creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
+=====================-->
+
+
+<template name="roomCalendar">
+<div id="availability" class="availability">
+	{{#if isRoom}}
+		<a href="#"><i id="addButton" class="material-icons">&#xE856;</i></a>
+	{{else}}
+		<a href="#"><i id="menuButton" class="material-icons">&#xE5D2;</i></a>
+	{{/if}}
+	<a href="#"><i id="calendarButton" class="material-icons">&#xE8DF;</i></a>
+	<div class="room-info">
+		<p id="roomName">{{currentUser.fullName}}</p>
+		<p id="meetName"></p>
+		<p id="time"></p>
+		<div id="badge"><p id="status">Sala Disponible</p></div>
+	</div>
+	<img src="/neo-logo.png" class="neo-logo">
+</div>
+
+
+<div class="central">
+	<div id="calendarDiv"></div>
+</div>
+
+<div id="myModal" class="modal">
+	<div class="modal-content" style="background-color: white;">
+		<p class="close">&times;</p>
+		<div id="popupCalendar"></div>
+	</div>
+</div>
+
+<div id="addModal" class="modal">
+	<div class="modal-content">
+		<p class="close">&times;</p>
+		<div style="-webkit-overflow-scrolling: touch; overflow-y: scroll;">{{> roomSearch hideMenu='True' sedes=sedes}}</div>
+	</div>
+</div>
+
+
+<script>
+var modal = document.getElementById('myModal');
+var span = document.getElementsByClassName("close")[0];
+span.onclick = function() {
+    modal.style.display = "none";
+}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+var addModal = document.getElementById('addModal');
+var addSpan = document.getElementsByClassName("close")[1];
+addSpan.onclick = function() {
+    addModal.style.display = "none";
+}
+window.onclick = function(event) {
+    if (event.target == addModal) {
+        addModal.style.display = "none";
+    }
+}
+</script>
+
+</template>
+

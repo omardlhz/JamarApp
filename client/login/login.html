@@ -1,0 +1,18 @@
+<!--==================== 
+nombre de archivo: login.html
+descripción: Pantalla de login.
+creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
+=====================-->
+
+<template name="loginForm">
+<div class="mainScreen">
+  	<form class="form-signin" method="post">
+  		<img class="form-signin-heading" src="/logo-jamar.png">
+  		<p>Sistema de Disponibilidad de Sala</p>       
+      	<input type="text" id="username" class="form-control" name="username" placeholder="Usuario" required="" autofocus="" />
+      	<input type="password" id="password" class="form-control" name="password" placeholder="Contraseña" required=""/>     
+      	<input id="login-button" class="btn" type="submit" value="Iniciar Sesión">
+      	<div class="incorrect_cred">¡Oops! Credenciales incorrectas.</div>
+    </form>
+</div>
+</template>

@@ -1,0 +1,22 @@
+<!--==================== 
+nombre de archivo: sidenav.html
+descripción: Menú lateral responsivo.
+creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
+=====================-->
+
+<template name="sidenav">
+<div id="sideMenu" class="sidenav">
+  <a href="javascript:void(0)" id="closeButton" class="closebtn">&times;</a>
+  <a id="searchButton" href="./">Reserva de Sala</a>
+  {{#if isRoom}}
+  	<a id="presentButton" href="{{ pathFor 'modoPresentacion'}}">Modo Presentación</a>
+  {{/if}}
+  {{#unless isRoom}}
+    <a href="{{ pathFor 'roomList'}}">Lista de Salas</a>
+  {{/unless}}
+  {{#if currentUser.isAdmin}}
+  	<a href="{{ pathFor 'modoAdmin'}}">Admin Panel</a>
+  {{/if}}
+  <a id="logoutButton" href="#">Cerrar sesión</a>
+</div>
+</template>

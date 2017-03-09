@@ -1,0 +1,57 @@
+<!--==================== 
+nombre de archivo: roomSearch.html
+descripción: Plantilla para búsqueda de sala.
+creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
+=====================-->
+
+<template name="roomSearch">
+<div id="panelAdmin">
+	{{#unless hideMenu}}
+	<a href="#"><i id="menuButton" class="material-icons" style="color: black;">menu</i></a>
+	{{/unless}}
+	{{#if loading}}
+		{{> loadScreen}}
+	{{/if}}
+	<div id="contentWrapper">
+		<div class="form-wrapper">
+
+			{{#if hideMenu}}
+				<a href="#" id="logoutButton" style="text-decoration: none;"><h1>Reserva de Sala</h1></a>
+			{{else}}
+				<h1>Reserva de Sala</h1>
+			{{/if}}
+			<p>Sistema para buscar y registrar la sala más apropiada.</p>
+
+			<form id="searchForm" method="post">
+				<input name="subject" placeholder="Nombre de reunión a crear" class="form-style" type="text" required>
+				<input name="numpeople" type="number" pattern="\d*" placeholder="Número de personas" class="form-style">
+				<input id="attendees">
+				<input id="date" name="date" type="date" class="form-style">
+				<input id="startTime" name="startTime" placeholder="Hora de Inicio" class="form-time" type="time" step="3600">
+				<input id="endTime" name="endTime" placeholder="Hora de Final" class="form-time" type="time" step="3600">
+				<select name="sede" placeholder="Sede">
+					<option value="" disabled selected>Seleccionar Sede</option>
+					{{#each sedes}}
+						<option value="{{_id}}">{{name}}</option>
+					{{/each}}
+				</select>
+				<br />
+				<label style="margin-left: 2px"><input style="margin-top: 20px; margin-bottom: 20px; margin-right: 5px;" type="checkbox" name="hasVideo" value="hasVideo">Necesita Video Conferencia?</label>
+				<input value="Buscar Sala" class="submit" type="submit">
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.getElementById("date").valueAsDate = new Date();
+	document.getElementById("startTime").value = "08:00";
+	document.getElementById("endTime").value = "09:00";
+
+	$('#startTime').change(function() {
+
+		$('#endTime').val($(this).val());
+		document.getElementById("endTime").stepUp(1);
+	});
+</script>
+</template>

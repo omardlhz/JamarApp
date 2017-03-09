@@ -1,0 +1,712 @@
+/*
+ * Nombre de archivo: main.css
+ * Descripcion: Plantilla CSS general de la app.
+ * Creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
+*/
+
+
+/* ============================== */
+/* Estilo general                 */
+/* ============================== */
+
+* {
+  margin-top:  0px;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden; 
+}
+
+body {
+  padding: 0px;
+  margin: 0px;
+  overflow-x: hidden;
+  overflow-y: hidden; 
+}
+
+h1,h2,h3, p{
+  overflow: hidden;
+}
+
+h1{
+  color: red;
+  font-family: 'Lato', sans-serif;
+}
+
+
+/* ============================== */
+/* Iconos Material (selfhosted)   */
+/* ============================== */
+
+@font-face {
+   font-family: 'Material Icons';
+   font-style: normal;
+   font-weight: 400;
+   src: url(includes/MaterialIcons-Regular.eot); /* For IE6-8 */
+   src: local('Material Icons'),
+        local('MaterialIcons-Regular'),
+        url(iconfonts/MaterialIcons-Regular.woff2) format('woff2'),
+        url(iconfonts/MaterialIcons-Regular.woff) format('woff'),
+        url(iconfonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+/* ============================== */
+/* Pantalla de login              */
+/* ============================== */
+
+.mainScreen{
+	padding: 0;
+	background-color: #bf0310;
+	width: 100%;
+	height: 100vh;
+	margin: 0 auto;
+	text-align: center;
+	display: inline-block;
+}
+
+.form-signin {
+  width: 290px;
+  margin: 60px auto 10px;
+  text-align: center;
+}
+
+.form-signin p{
+	color: white;
+}
+
+.form-signin-heading {
+  text-align: center;
+  font-weight: bold;
+  color: #fff;
+}
+
+.form-control {
+	position: relative;
+	font-size: 16px;
+	height: auto;
+	padding: 10px;
+	background-color: white;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.mainScreen input[type="text"] {
+	margin-bottom: -1px;
+  border-top: 1px solid transparent;
+  border-right: 1px solid transparent;
+  border-left: 1px solid transparent;
+  box-shadow: none;
+	border-radius: 3px 3px 0px 0px;   
+}
+
+.mainScreen input[type="password"] {
+  z-index: 2;
+  margin-bottom: 20px;
+	border-top: none;
+	border-bottom: 1px solid transparent;
+	border-right: 1px solid transparent;
+	border-left: 1px solid transparent;
+	border-radius: 0px 0px 3px 3px;	  
+	box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+}
+
+.mainScreen input[type="text"]:focus{
+	box-shadow: inset 0 1px 1px rgba(0,0,0,0.075); 
+}
+
+.mainScreen input[type="password"]:focus{
+	box-shadow: inset 0 1px 1px rgba(0,0,0,0.075); 
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+
+.btn{
+	border-radius: 3px;
+	color: white;
+	background-color: #85020b;
+	font-weight: bold;
+	width: 100%;
+	border: none;
+    padding: 10px;
+    display: inline-block;
+}
+
+.incorrect_cred{
+	color: white;
+	padding: 10px;
+	margin-top: 10px;
+	border-radius: 3px;
+	background-color: rgba(133, 2, 11, 0.4);
+	display: none;
+}
+
+
+/* ============================== */
+/*  Pantalla de Carga             */
+/* ============================== */
+
+.loadOverlay{
+  z-index: 100000;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(66, 66, 66, 0.54);
+}
+
+.loader {
+  margin: 0 auto;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #BF0310;
+  width: 90px;
+  height: 90px;
+  -webkit-animation: spin 0.5s linear infinite;
+  animation: spin 0.5s linear infinite;
+  top: 40%;
+  position: relative;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+/* ============================== */
+/* Estilo roomCalendar            */
+/* ============================== */
+
+#menuButton{
+	color: white;
+	font-size:48px;
+	float: left;	
+	margin: 25px 0px 0px 20px;
+}
+
+#calendarButton{
+	color: white;
+	font-size:48px;
+	float: right;
+	margin: 25px 20px 0px 0px;
+}
+
+#addButton{
+  color: white;
+  font-size:48px;
+  float: left;  
+  margin: 25px 0px 0px 20px;
+}
+
+#calendarDiv{
+	display: inline-block;
+}
+
+.availability{
+
+  height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  text-align: left;
+  color: white;
+  background: 
+    /* top, transparent red */ 
+    linear-gradient(
+      rgba(35, 186, 18, 0.45), 
+      rgba(35, 186, 18, 0.45)
+    ),
+    /* bottom, image */
+    url(/background.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.status-color{
+
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+}
+
+
+.room-info{
+  z-index: 2;
+  padding-left: 25px;
+  width: 100%;
+  position: relative;
+  top: 50%;
+  transform: translateY(-70%);
+}
+
+#roomName{
+
+  font-size: 6vw;
+  font-weight: 400px;
+
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+#meetName{
+  font-size: 40px;
+  font-weight: 300;
+
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#time{
+  font-size: 25px;
+  font-weight: 100;
+  margin-top: 10px;
+}
+
+#calendarDiv{
+  display: none;
+  height: 50vh;
+  width: 90%;
+}
+
+#badge{
+  margin-left: -25px;
+  width: 100%;
+  background-color: rgba(12, 65, 6, 0.82);
+  box-shadow: 0px 2px 13px 0px rgba(0,0,0,0.50), 0px 2px 13px 0px rgba(0,0,0,0.50);
+}
+
+#status{
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border: 0;
+  font-size: 5vw;
+  padding-left: 100%;
+  text-transform: uppercase;
+  animation: marquee 6s linear infinite;
+}
+
+
+@keyframes marquee {
+    0%   { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+}
+
+
+.neo-logo{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 130px;
+}
+
+
+/* ============================== */
+/* Menú Hamburger                 */
+/* ============================== */
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    max-width: 100%;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 65px;
+    transition: 0.5s;
+}
+
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s
+}
+
+
+.sidenav a:hover, .offcanvas a:focus{
+    color: #f1f1f1;
+}
+
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+
+/* ============================== */
+/* Vista Modal (popup)            */
+/* ============================== */
+
+.central{
+  text-align: center;
+  margin: 0 auto;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    padding-top: 25px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+
+.modal-content {
+    background-color: #EDECED;
+    margin: auto;
+    padding: 10px 20px 20px 20px;
+    border-radius: 8px;
+    border: 1px solid #888;
+    width: 80%;
+    height: 80%;
+    overflow: hidden;
+}
+
+
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: right;
+}
+
+
+.close:hover, .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+#popupCalendar{
+  display: inline-block;
+  height: 90%;
+}
+
+
+/* ============================== */
+/* Panel de Administrador         */
+/* ============================== */
+
+#panelAdmin{
+  background-color: #efefef;
+  height: 100vh;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
+}
+
+#contentWrapper{
+  height: 100%;
+  width: 100%;
+}
+
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+
+.itemManager{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  float: left;
+  width: 33%;
+}
+
+
+
+.itemManager button {
+
+  width: 90%;
+  border-radius: 0px;
+  border: 0;
+  background-color: green;
+  color: white;
+  height: 50px;
+}
+
+
+.input-group > input[type="text"]{
+  height: 50px;
+  width: 80%;
+  border: 0;
+  float: left;
+  border-radius: 0px;
+}
+
+.input-group > input[type="text"]:disabled{
+  height: 50px;
+  width: 80%;
+  border: 0;
+  float: left;
+  border-radius: 0px;
+  background-color: #D6D6D6;
+}
+
+.input-group > input[type="submit"]{
+  height: 50px;
+  width: 10%;
+  float: left;
+  border: 0;
+  border-radius: 0px;
+  -webkit-appearance: none;
+  color: white;
+  background-color: red;
+}
+
+select{
+  height: 30px;
+  width: 100%;
+}
+
+
+/* ============================== */
+/* Estilo de formularios          */
+/* ============================== */
+
+.form-wrapper{
+  width: 90%;
+  margin: 0 auto;
+}
+
+
+.form-style {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background-color: #fff;
+  width: 100%;
+  border-radius: 0px;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.form-style:focus{
+  box-shadow: 0 0px 2px #bf0310 !important;
+}
+
+.form-time {
+  float: left;
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background-color: #fff;
+  width: 50%;
+  border-radius: 0px;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+
+.submit{
+
+  height: 50px;
+  width: 100%;
+  float: left;
+  border: 0;
+  border-radius: 0px;
+  -webkit-appearance: none;
+  color: white;
+  background-color: green;
+}
+
+input.error{
+
+  background-color:rgb(255, 231, 231);
+}
+
+.fileContainer {
+    overflow: hidden;
+    position: relative;
+}
+
+.fileContainer [type=file] {
+    cursor: inherit;
+    display: block;
+    font-size: 999px;
+    filter: alpha(opacity=0);
+    min-height: 100%;
+    min-width: 100%;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
+}
+
+
+.fileContainer {
+  padding-top: 16px;
+  height: 35px;
+  width: 100%;
+  color: blue;
+  text-align: center;  
+  float: left;
+  text-decoration: underline;
+}
+
+.fileContainer [type=file] {
+    cursor: pointer;
+}
+
+
+/* ============================== */
+/* Lista de Salas                 */
+/* ============================== */
+
+.roomItem{
+  overflow: hidden;
+  margin: 5px;
+  padding: 10px;
+  width: 100%;
+  height: 30px;
+  background: #FFFFFF;
+  box-shadow: 0px 3px 4px 0px rgba(102,102,102,0.50);
+}
+
+.roomItem h2{
+  padding-top: 5px;
+  font-size: 16px;
+  font-family: 'Lato', sans-serif;
+}
+
+.name{
+  float: left;
+}
+
+.numpeople{
+  float: right;
+  padding-right: 50px;
+}
+
+
+/* ============================== */
+/* Vista Vertical                 */
+/* ============================== */
+
+@media (max-width: 800px) and (orientation: portrait) {
+
+  .availability{
+
+  	height: 50vh;
+  	width: 100%;
+  	margin: 0 auto;
+  	color: white;
+  }
+
+  .room-info{
+
+  	position: relative;
+    z-index: 2;
+  	top: 50%;
+  	transform: translateY(-75%);
+  }
+
+  #roomName{
+
+    font-size: 6vw;
+    font-weight: 400px;
+
+    margin-top: 0px;
+    margin-bottom: 10px;
+  }
+
+  #meetName{
+    font-size: 5vw;
+    font-weight: 300;
+
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  #time{
+    font-size: 5.4vw;
+    font-weight: 100;
+    margin-top: 10px;
+  }
+
+  #calendarButton{
+  	visibility: hidden;
+  }
+
+  #calendarDiv{
+		height: 50vh;
+		width: 95%;
+    margin-top: 5px;
+    text-align: center;
+		display: inline-block;
+    overflow: hidden;
+	}
+
+  .itemManager{
+    float: left;
+    width: 100%;
+  }
+
+  .neo-logo{
+    top: 57vw;
+    width: 100px;
+  }
+}
