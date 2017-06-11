@@ -13,7 +13,7 @@ var ews = Npm.require("ews-javascript-api");
 
 
 // Deshabilitar el logging en la consola (Habilitar para modo desarrollo)
-ews.EwsLogging.DebugLogEnabled = true
+ews.EwsLogging.DebugLogEnabled = false
 
 var ntlmXHR = require("./ntlmXHRApi");
 var ExchangeService = ews.ExchangeService;
@@ -48,7 +48,7 @@ Meteor.methods({
 	    	exch.Credentials = new ews.ExchangeCredentials("null", "null"); // Evitar error de credenciales.
 	    	exch.Url = new ews.Uri("https://mail.mueblesjamar.com.co/EWS/Exchange.asmx");
 
-	    	var view = new CalendarView(DateTime.Now.Add(-1, "week"), DateTime.Now.Add(1, "week"));
+	    	var view = new CalendarView(DateTime.Now.Add(-1, "week"), DateTime.Now.Add(4, "week"));
 
 	    	exch.FindAppointments(new ews.FolderId(WellKnownFolderName.Calendar, new ews.Mailbox(calUser + "@mueblesjamar.com.co")), view).then((response) => {
 
@@ -72,15 +72,19 @@ Meteor.methods({
 				var doc = Events.findOne({_id: exec.result[i].Id.UniqueId});
 
 				var subject = String(exec.result[i].Subject);
+				var changeKey = String(exec.result[i].Id.ChangeKey);
 				var startTime = String(exec.result[i].Start);
 				var endTime = String(exec.result[i].End);
 
+				console.log("======================");
+				console.log("subject: " + subject);
+				console.log("ChangeKey: " + changeKey);
 
 				// Revisar si el evento ya existe en la base de datos.
 				if(doc){
 
 					//  Si existe, revisar si se debe actualizar.
-					if(doc.subject != subject || doc.startTime != startTime || doc.endTime != endTime){
+					if(doc.subject != subject || doc.startTime != startTime || doc.endTime != endTime || doc.changeKey != changeKey){
 
 						Events.update(
 							{_id: doc._id},
@@ -89,7 +93,8 @@ Meteor.methods({
 									username: calUser,
 									subject: subject,
 									startTime: startTime,
-									endTime: endTime
+									endTime: endTime,
+									changeKey: changeKey
 								}
 							}
 						);

@@ -28,22 +28,41 @@ creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
 		</div>
 	</div>
 
-	<div id="myModal" class="modal">
+	<div id="calendarModal" class="modal">
 		<div class="modal-content" style="background-color: white;">
 			<p class="close">&times;</p>
+			<h1 id="roomName"></h1>
 			<div id="popupCalendar"></div>
 		</div>
 	</div>
 
+	<div id="eventModal" class="modal">
+		<div class="modal-content" style="background-color: white;">
+			<p class="close">&times;</p>
+			<h1 id="eventTitle"></h1>
+			<h2 id="eventDate"></h2>
+			<h3 id="eventTime"></h3>
+			<button class="actionButton green">Volver a Calendario</button>
+			<button class="actionButton red">Cancelar Evento</button>
+		</div>
+	</div>
+
 	<script>
-		var modal = document.getElementById('myModal');
-		var span = document.getElementsByClassName("close")[0];
-		span.onclick = function() {
-		    modal.style.display = "none";
-		}
+		var calendarModal = document.getElementById('calendarModal');
+		var eventModal = document.getElementById('eventModal');
+
+		$('.close').on('click', function() {
+
+			$(".modal").css({"display":"none"});
+			$('#popupCalendar').fullCalendar('removeEvents');
+		});
+		
 		window.onclick = function(event) {
-		    if (event.target == modal) {
-		        modal.style.display = "none";
+
+		    if (event.target == calendarModal || event.target == eventModal) {
+
+		        $(".modal").css({"display":"none"});
+		        $('#popupCalendar').fullCalendar('removeEvents');
 		    }
 		}
 	</script>

@@ -22,13 +22,16 @@ Template.roomList.events({
 		
 		document.getElementById("sideMenu").style.width = "500px";
 	},
+	'click .fc-prev-button': function(){
+		console.log("prev click");
+	},
 	'click #roomItem': function(e){
 
 		Session.set("loading", true);
+		var roomName = $(e.currentTarget).find('[name=username]').text();
 
-		$("#myModal").css("display", "block");
-
-		$('#popupCalendar').fullCalendar('removeEvents');
+		$("#calendarModal").css("display", "block");
+		$("#roomName").text(String(roomName));
 
 		$('#popupCalendar').fullCalendar({
 			header: {
@@ -37,37 +40,69 @@ Template.roomList.events({
 				center: '',
 				right: 'prev, today, next'
 			},
-				titleFormat: 'D/MM/YYYY',
-				defaultView: 'basicWeek',
-				timezone: 'local'
+			titleFormat: 'D/MM/YYYY',
+			defaultView: 'basicWeek',
+			timezone: 'local',
+			cache: false,
+			eventClick: function(calEvent, jsEvent, view){				
+
+				// Formato de fecha de evento
+				var dateFormat = {
+					day: 	"2-digit",
+					month:  "long",
+					year: 	"numeric"
+				}
+
+				// Formato de hora de evento.
+				var timeFormat = {
+					hour: 	"2-digit",
+					minute: "2-digit"
+				}
+
+				// Se encarga de prepar los strings de fecha, hora de inicio y hora de final.
+				var eventDate = new Date(calEvent.start).toLocaleString("es-ES",dateFormat);
+				var startTime = new Date(calEvent.start).toLocaleString([], timeFormat);
+				var endTime = new Date(calEvent.end).toLocaleString([], timeFormat);
+
+				// Actualiza la vista de evento.
+				$("#calendarModal").css("display", "none");
+				$("#eventModal").css("display", "block");
+				$("#eventTitle").text(calEvent.title);
+				$("#eventDate").text(eventDate);
+				$("#eventTime").text(startTime + "-" + endTime);
+			}
 		});
-
 		
-		var roomName = $(e.target).find('[name=username]').text();
-
 		var userId = Meteor.user()._id;
 
 		Meteor.call('monitorEvents', userId, localStorage.getItem("encKey"), roomName,function(error, result) {
 
 			if(result){
 
-				Session.set("loading", undefined);
-
-				var events = Events.find({username: roomName}).fetch();
-
-				for(var i = 0; i < events.length; i++){
-
-					var event =  {
-
-						id: events[i]._id,
-						title: events[i].subject,
-						start: events[i].startTime,
-						end: events[i].endTime
-					}
-
-					$('#popupCalendar').fullCalendar('renderEvent', event, true);
-				}
+				loadCalendar(roomName);
 			}
 		});
 	}
 });
+
+
+function loadCalendar(roomName){
+
+	var events = Events.find({username: String(roomName)}).fetch();
+	events.forEach(function(event){
+
+		var eventx =  {
+
+			id: event._id,
+			title: event.subject,
+			start: event.startTime,
+			end: event.endTime,
+			changeKey: event.changeKey
+		}
+
+		$('#popupCalendar').fullCalendar('renderEvent', eventx, true);
+    	
+	});
+
+	Session.set("loading", undefined);
+}
