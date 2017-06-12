@@ -13,9 +13,6 @@ var EWS = require("node-ews");
 Meteor.methods({
 	'removeEvent': function(userId, encKey, eventId, changeKey){
 
-		console.log("id:" + eventId);
-		console.log(changeKey);
-
 		var user = Meteor.users.findOne(userId);
 
 		var exec = Async.runSync(function(done){
@@ -54,13 +51,10 @@ Meteor.methods({
 			}
 
 			ews.run(ewsFunction, ewsArgs, ewsSoapHeader).then(result => {
-
-				console.log("here")
-				console.log(result)
+				
 			    done(null);
 			}).catch(err => {
 
-				console.log(err)
 				done(err.stack);
 			});
 		});

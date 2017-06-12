@@ -79,13 +79,13 @@ Meteor.methods({
 			});
 		});
 
-		if(!exec.err){
+		if(!exec.error){
 
 			return true;
 		}
 		else{
 
-			console.log(exec.err);
+			console.log(exec.error);
 
 			return false;
 		}
