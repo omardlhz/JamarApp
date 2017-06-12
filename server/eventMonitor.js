@@ -76,10 +76,6 @@ Meteor.methods({
 				var startTime = String(exec.result[i].Start);
 				var endTime = String(exec.result[i].End);
 
-				console.log("======================");
-				console.log("subject: " + subject);
-				console.log("ChangeKey: " + changeKey);
-
 				// Revisar si el evento ya existe en la base de datos.
 				if(doc){
 

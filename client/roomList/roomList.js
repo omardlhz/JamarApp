@@ -28,7 +28,10 @@ Template.roomList.events({
 	'click #roomItem': function(e){
 
 		Session.set("loading", true);
+
 		var roomName = $(e.currentTarget).find('[name=username]').text();
+		var roomId = $(e.currentTarget).find('[name=id]').text();
+		var changeKey = $(e.currentTarget).find('[name=changeKey]').text();
 
 		$("#calendarModal").css("display", "block");
 		$("#roomName").text(String(roomName));
@@ -40,10 +43,11 @@ Template.roomList.events({
 				center: '',
 				right: 'prev, today, next'
 			},
+    		editable: false,
+    		selectable: true,
 			titleFormat: 'D/MM/YYYY',
 			defaultView: 'basicWeek',
 			timezone: 'local',
-			cache: false,
 			eventClick: function(calEvent, jsEvent, view){				
 
 				// Formato de fecha de evento
@@ -64,15 +68,18 @@ Template.roomList.events({
 				var startTime = new Date(calEvent.start).toLocaleString([], timeFormat);
 				var endTime = new Date(calEvent.end).toLocaleString([], timeFormat);
 
-				// Actualiza la vista de evento.
 				$("#calendarModal").css("display", "none");
 				$("#eventModal").css("display", "block");
+
+				// Actualiza la vista de evento.
 				$("#eventTitle").text(calEvent.title);
 				$("#eventDate").text(eventDate);
 				$("#eventTime").text(startTime + "-" + endTime);
+				$("#cancelEvent").attr("_id", calEvent.id);
+				$("#cancelEvent").attr("changeKey", calEvent.changeKey);
 			}
 		});
-		
+
 		var userId = Meteor.user()._id;
 
 		Meteor.call('monitorEvents', userId, localStorage.getItem("encKey"), roomName,function(error, result) {
@@ -82,6 +89,35 @@ Template.roomList.events({
 				loadCalendar(roomName);
 			}
 		});
+	},
+	'click #calendarBack': function(){
+
+		$("#calendarModal").css("display", "block");
+		$("#eventModal").css("display", "none");
+	},
+	'click #cancelEvent': function(e){
+
+		var eventId = $(e.currentTarget).attr("_id");
+		var changeKey = $(e.currentTarget).attr("changeKey");
+
+		console.log(eventId)
+		console.log(changeKey)
+
+		var userId = Meteor.user()._id;
+
+		Meteor.call('removeEvent', userId, localStorage.getItem("encKey"), eventId, changeKey,function(error, result) {
+
+			if(result){
+
+				alert("eliminado");
+			}
+		});
+
+
+
+
+
+
 	}
 });
 
@@ -97,8 +133,11 @@ function loadCalendar(roomName){
 			title: event.subject,
 			start: event.startTime,
 			end: event.endTime,
-			changeKey: event.changeKey
+			changeKey: event.changeKey,
+			allDay: false
 		}
+
+		console.log(eventx);
 
 		$('#popupCalendar').fullCalendar('renderEvent', eventx, true);
     	

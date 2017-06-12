@@ -1,4 +1,6 @@
 /**
+ * ALERTA: NO ESTÁ ACTUALMENTE EN USO.
+ * 
  * nombre de archivo: listEvents.js
  * descripción: Busca las reuniones de una sala en específico.
  * 				surge a partir del error encontrado el 06/01/17
