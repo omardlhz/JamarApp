@@ -67,14 +67,19 @@ Meteor.methods({
 
 			for(var i = 0; i < exec.result.length; i++){
 				
-				eventIds.push(exec.result[i].Id.UniqueId);
-
-				var doc = Events.findOne({_id: exec.result[i].Id.UniqueId});
-
 				var subject = String(exec.result[i].Subject);
 				var changeKey = String(exec.result[i].Id.ChangeKey);
 				var startTime = String(exec.result[i].Start);
 				var endTime = String(exec.result[i].End);
+
+				var doc = Events.findOne({_id: exec.result[i].Id.UniqueId});
+
+				// Si el evento ha sido cancelado, no agregar a lista
+				// de eventos.
+				if(subject.indexOf("Cancel") === -1){
+
+					eventIds.push(exec.result[i].Id.UniqueId);
+				}
 
 				// Revisar si el evento ya existe en la base de datos.
 				if(doc){

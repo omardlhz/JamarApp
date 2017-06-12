@@ -129,7 +129,7 @@ Template.roomList.events({
 			}
 			else{
 
-				swal("Lo sentimos", "Tu evento no pudo ser cancelada.", "error");
+				swal("Lo sentimos", "Tu evento no pudo ser cancelado.", "error");
 			}
 		});
 	}
