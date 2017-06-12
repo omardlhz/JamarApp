@@ -20,6 +20,7 @@ creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
 				{{#each rooms}}
 				<a id="roomItem" href="#"><div class="roomItem">
 					<p name="username" style="display: none;">{{username}}</p>
+					<p name="admin" style="display: none;">{{admin}}</p>
 					<h2 class="name">{{username}}</h2>
 					<h2 class="numpeople"><i class="material-icons" style="color: black;">today</i></h2>
 				</div></a>
@@ -43,7 +44,7 @@ creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
 			<h2 id="eventDate"></h2>
 			<h3 id="eventTime"></h3>
 			<button id="calendarBack" class="actionButton green">Volver a Calendario</button>
-			<button id="cancelEvent" class="actionButton red">Cancelar Evento</button>
+			<button id="cancelEvent" style="display: none;" class="actionButton red">Cancelar Evento</button>
 		</div>
 	</div>
 

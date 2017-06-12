@@ -30,6 +30,7 @@ Template.roomList.events({
 		Session.set("loading", true);
 
 		var roomName = $(e.currentTarget).find('[name=username]').text();
+		var roomAdmin = $(e.currentTarget).find('[name=admin]').text();
 		var roomId = $(e.currentTarget).find('[name=id]').text();
 		var changeKey = $(e.currentTarget).find('[name=changeKey]').text();
 
@@ -68,6 +69,7 @@ Template.roomList.events({
 				var startTime = new Date(calEvent.start).toLocaleString([], timeFormat);
 				var endTime = new Date(calEvent.end).toLocaleString([], timeFormat);
 
+				// Cambia la vista de calendario a vista de evento.
 				$("#calendarModal").css("display", "none");
 				$("#eventModal").css("display", "block");
 
@@ -77,6 +79,11 @@ Template.roomList.events({
 				$("#eventTime").text(startTime + "-" + endTime);
 				$("#cancelEvent").attr("_id", calEvent.id);
 				$("#cancelEvent").attr("changeKey", calEvent.changeKey);
+
+				// Verificar si se debe mostrar el botón de cancelar evento.
+				// (Solo debe ser mostrado a administrador)
+				var display = (Meteor.user().username === roomAdmin) ? "inline-block" : "none";
+				$("#cancelEvent").css("display", display);
 			}
 		});
 
@@ -92,6 +99,7 @@ Template.roomList.events({
 	},
 	'click #calendarBack': function(){
 
+		// Cambia de vista de evento a vista de calendario.
 		$("#calendarModal").css("display", "block");
 		$("#eventModal").css("display", "none");
 	},
@@ -99,29 +107,42 @@ Template.roomList.events({
 
 		var eventId = $(e.currentTarget).attr("_id");
 		var changeKey = $(e.currentTarget).attr("changeKey");
-
-		console.log(eventId)
-		console.log(changeKey)
-
 		var userId = Meteor.user()._id;
 
+		Session.set("loading", true);
 		Meteor.call('removeEvent', userId, localStorage.getItem("encKey"), eventId, changeKey,function(error, result) {
+
+			Session.set("loading", undefined);
 
 			if(result){
 
-				alert("eliminado");
+				swal({
+					title: "¡Excelente!",
+					text: "Su reunión ha sido cancelada",
+					type: "success",
+					showCancelButton: false
+				}, function() {
+
+					$('#popupCalendar').fullCalendar('removeEvents');
+					$(".modal").css("display", "none");
+				});
+			}
+			else{
+
+				swal("Lo sentimos", "Tu evento no pudo ser cancelada.", "error");
 			}
 		});
-
-
-
-
-
-
 	}
 });
 
 
+/**
+ * Carga todos los eventos de esta sala
+ * (que se encuentran en la base de datos)
+ * al calendario.
+ *
+ * @param      {String}  roomName  Nombre de la sala.
+ */
 function loadCalendar(roomName){
 
 	var events = Events.find({username: String(roomName)}).fetch();
@@ -136,8 +157,6 @@ function loadCalendar(roomName){
 			changeKey: event.changeKey,
 			allDay: false
 		}
-
-		console.log(eventx);
 
 		$('#popupCalendar').fullCalendar('renderEvent', eventx, true);
     	
