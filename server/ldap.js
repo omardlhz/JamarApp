@@ -9,6 +9,9 @@ var ResolveNameSearchLocation = ews.ResolveNameSearchLocation;
 var Uri = ews.Uri;
 var LDAP = {};
 
+ews.EwsLogging.DebugLogEnabled = true
+
+
 LDAP.quickAuth = function(options) {
 
 	var username = options.username.trim().toLowerCase().split('@')[0];
@@ -25,7 +28,7 @@ LDAP.quickAuth = function(options) {
 	    else{
 
 	    	var ntlmXHRApi = new ntlmXHR.ntlmXHRApi(username,options.pass);
-	    	var exch = new ExchangeService(ExchangeVersion.Exchange2007);
+	    	var exch = new ExchangeService(ExchangeVersion.Exchange2016);
 	    	exch.XHRApi = ntlmXHRApi;
 	    	exch.Credentials = new ews.ExchangeCredentials("null", "null"); // Evitar error de credenciales.
 	    	exch.Url = new ews.Uri("https://mail.mueblesjamar.com.co/EWS/Exchange.asmx");
