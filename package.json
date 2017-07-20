@@ -13,7 +13,6 @@
     "meteor-node-stubs": "^0.2.4",
     "node-ews": "^3.0.6",
     "promise-factory": "^1.0.4",
-    "simple-oauth2": "^1.3.0",
     "sweetalert2": "^6.3.2"
   }
 }
