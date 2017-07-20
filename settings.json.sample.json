@@ -1,0 +1,6 @@
+{
+	"credentials":{
+		"id": "APP_ID_GENERATED_IN_OFFICE_365",
+		"secret": "APP_SECRET_GENERATED_IN_OFFICE_365"
+	}
+}
