@@ -2,6 +2,7 @@ Meteor.publish('events', function () {
   return Events.find();
 });
 
+
 Meteor.publish('sedes', function () {
   return Sede.find();
 });
@@ -20,6 +21,12 @@ Meteor.publish('currentUser', function(){
 
 		this.ready();
 	}
+});
+
+
+Meteor.publish('users', function(){
+
+	return Meteor.users.find({},{fields: {username: 1, fullName: 1}});
 });
 
 

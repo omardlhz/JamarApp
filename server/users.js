@@ -24,6 +24,14 @@ Meteor.users.attachSchema(new SimpleSchema({
     type: String,
     optional: true
   },
+  refreshToken: {
+    type: String,
+    optional: true
+  },
+  expirationDate:{
+    type: String,
+    optional: true
+  },
   isAdmin: {
     type: Boolean,
     defaultValue: false

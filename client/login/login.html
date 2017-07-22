@@ -6,13 +6,11 @@ creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
 
 <template name="loginForm">
 <div class="mainScreen">
-  	<form class="form-signin" method="post">
+  	<div class="form-signin">
   		<img class="form-signin-heading" src="/logo-jamar.png">
   		<p>Sistema de Disponibilidad de Sala</p>       
-      	<input type="text" id="username" class="form-control" name="username" placeholder="Usuario" required="" autofocus="" />
-      	<input type="password" id="password" class="form-control" name="password" placeholder="Contraseña" required=""/>     
-      	<input id="login-button" class="btn" type="submit" value="Iniciar Sesión">
+      	<a id="authUrl" href=""><input id="login-button" class="btn" type="submit" value="Iniciar Sesión con Office 365"></a>
       	<div class="incorrect_cred">¡Oops! Credenciales incorrectas.</div>
-    </form>
+    </div>
 </div>
 </template>

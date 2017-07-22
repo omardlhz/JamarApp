@@ -1,77 +1,120 @@
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
-var ews = Npm.require("ews-javascript-api");
-var ntlmXHR = require("./ntlmXHRApi");
-var ExchangeService = ews.ExchangeService;
-var ExchangeVersion = ews.ExchangeVersion;
-var ExchangeCredentials = ews.ExchangeCredentials;
-var ResolveNameSearchLocation = ews.ResolveNameSearchLocation;
-var Uri = ews.Uri;
+var credentials = {
+  client: {
+    id: Meteor.settings.credentials.id,
+    secret: Meteor.settings.credentials.secret,
+  },
+  auth: {
+    tokenHost: 'https://login.microsoftonline.com',
+    authorizePath: 'common/oauth2/v2.0/authorize',
+    tokenPath: 'common/oauth2/v2.0/token'
+  }
+};
+
+// The scopes the app requires
+var scopes = [ 'openid', 'User.Read','Calendars.ReadWrite.Shared', 'offline_access'];
+var oauth2 = require('simple-oauth2').create(credentials);
+var redirectUri = 'http://localhost:3000/authorize';
+Future = Npm.require('fibers/future');
+Fiber = Npm.require('fibers');
+var microsoftGraph = require("@microsoft/microsoft-graph-client");
 var LDAP = {};
 
-LDAP.quickAuth = function(options) {
+LDAP.quickAuth = function(auth_code){
 
-	var username = options.username.trim().toLowerCase().split('@')[0];
-	var contactName;
+	var token;
+	var future = new Future();
 
-	var exec = Async.runSync(function (done){
+	oauth2.authorizationCode.getToken({
 
-		// Chequear si los campos están vacíos.
-	    if(options.username.length === 0 || options.pass.length === 0){
+		code: auth_code,
+		redirect_uri: redirectUri,
+		scope: scopes.join(' ')
+	},
+	Meteor.bindEnvironment(function(error, result) {
 
-	      err = true;
-	      done(err);
-	    }
-	    else{
+		if(error){
 
-	    	var ntlmXHRApi = new ntlmXHR.ntlmXHRApi(username,options.pass);
-	    	var exch = new ExchangeService(ExchangeVersion.Exchange2007);
-	    	exch.XHRApi = ntlmXHRApi;
-	    	exch.Credentials = new ews.ExchangeCredentials("null", "null"); // Evitar error de credenciales.
-	    	exch.Url = new ews.Uri("https://mail.mueblesjamar.com.co/EWS/Exchange.asmx");
+			future.throw(new Meteor.Error(403, 'Error de Autenticación.'));
+		}
+		else{
 
-	    	exch.ResolveName(username + "@mueblesjamar.com.co", ResolveNameSearchLocation.DirectoryOnly, true).then((response) => {
+			token = oauth2.accessToken.create(result);
 
-	    		var contactInfo = response.Items[0];
-	    		contactName = String(contactInfo.Mailbox.name);
+			var client = microsoftGraph.Client.init({
+				authProvider: (done) => {
+					// Just return the token
+					done(null, token.token.access_token);
+				}
+			});
 
-	    		done(null);	
-	    	}, 
-	    	function(err){
+			client.api('/me').get((err, res) => {
 
-	    		done(err);
-	    	});
-	    }
-	});
+				if(err){
 
-	if(!exec.error){
+					future.throw(new Meteor.Error(403, 'Error de Autenticación.'));
+				}
+				else{
 
-		var query = {username: username};
-		
-		// Encriptar la contraseña.
-		var encPass = CryptoJS.AES.encrypt(options.pass, options.encKey);
+					var contactName = res.displayName;
+					var email = res.userPrincipalName;
+					var username = email.substring(0, email.indexOf("@"));
+					var domain = email.substring(email.indexOf("@") + 1, email.length);
+					var query = {username: username};
 
-		Meteor.users.upsert(query, {$set: query, $setOnInsert: {fullName: contactName, isAdmin: false} });
+					if(domain === Meteor.settings.COMPANY_DOMAIN){
 
-		// Actualizar la contraseña encriptada.
-		Meteor.users.update(query, {$set: query, $set: {encPass: String(encPass)}});
+						Fiber(function(){
+
+							Meteor.users.upsert(query, {$set: query, $setOnInsert: {fullName: contactName, isAdmin: false} });
+							
+							Meteor.users.update(query, {$set: query, $set: {
+								encPass: String(token.token.access_token),
+								refreshToken: String(token.token.refresh_token),
+								expirationDate: String(token.token.expires_at.getTime())
+							}});
+
+							future["return"]({username: username});
+						}).run();
+					}
+					else{
+
+						future.throw(new Meteor.Error(405, 'Dominio incorrecto.'));
+					}
+				}
+			});
+		}
+	}));
+
+	return future.wait();
+};
+
+
+Meteor.methods({
+	'getAuthUrl': function(){
+
+		var returnVal = oauth2.authorizationCode.authorizeURL({
+		    redirect_uri: redirectUri,
+		    scope: scopes.join(' ')
+		});
+
+		return returnVal;
 	}
+});
 
-	return exec;
-}
 
 Accounts.registerLoginHandler('ldap', function (request) {
 
-  var username = request.username.trim().toLowerCase().split('@')[0];
-      auth = LDAP.quickAuth(request);
+	auth = LDAP.quickAuth(request.auth_code);
 
-  if (!auth.error) {
-    var user = Meteor.users.findOne({username: username});
+	if(!auth.error){
+		
+		var user = Meteor.users.findOne({username: auth.username});
+		return {userId: user._id};
+	}
+	else{
 
-    return {userId: user._id};
-  } else {
-
-    return {error: auth.error};
-  }
-
+		return {error: auth.error}
+	}
 });
