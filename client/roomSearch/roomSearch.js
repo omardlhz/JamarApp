@@ -80,7 +80,7 @@ Template.roomSearch.events({
 		}
 		else{
 
-			Meteor.call('roomAvailability', Meteor.user()._id, encKey, possibleRooms, formatStart, formatEnd, function(error, result) {
+			Meteor.call('roomAvailability', Meteor.user().username, possibleRooms, formatStart, formatEnd, function(error, result) {
 
 				Session.set("loading", undefined);
 

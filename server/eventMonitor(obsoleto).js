@@ -3,6 +3,8 @@
  * descripción: Monitorea los eventos del calendario EWS del usuario.
  * creado por: Omar De La Hoz (omar.dlhz@hotmail.com);
  *
+ * ALETRA: Este archivo se encuentra obsoleto.
+ * Fue reemplazado por monitorEvents para Office365
  */
 
 //ALERTA: Solo utilizar cuando no hay protocolo SSL.
@@ -16,6 +18,7 @@ var ews = Npm.require("ews-javascript-api");
 ews.EwsLogging.DebugLogEnabled = false
 
 var ntlmXHR = require("./ntlmXHRApi");
+var getToken = require("./getToken");
 var ExchangeService = ews.ExchangeService;
 var ExchangeVersion = ews.ExchangeVersion;
 var ExchangeCredentials = ews.ExchangeCredentials;
@@ -28,7 +31,7 @@ var WellKnownFolderName = ews.WellKnownFolderName;
 Meteor.methods({
 
 	// Monitorea si cambios en calendario de usuario.
-	'monitorEvents': function(userId, encKey, usuario){
+	'monitorEventsOLD': function(userId, encKey, usuario){
 
 		var user = Meteor.users.findOne(userId);
 

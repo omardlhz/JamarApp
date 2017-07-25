@@ -13,7 +13,7 @@ var credentials = {
 };
 
 // The scopes the app requires
-var scopes = [ 'openid', 'User.Read','Calendars.ReadWrite.Shared', 'offline_access'];
+var scopes = [ 'openid', 'User.Read', 'Calendars.ReadWrite','Calendars.ReadWrite.Shared', 'offline_access'];
 var oauth2 = require('simple-oauth2').create(credentials);
 var redirectUri = 'http://localhost:3000/authorize';
 Future = Npm.require('fibers/future');
@@ -41,6 +41,8 @@ LDAP.quickAuth = function(auth_code){
 		else{
 
 			token = oauth2.accessToken.create(result);
+
+			console.log("token: " + token.token.access_token);
 
 			var client = microsoftGraph.Client.init({
 				authProvider: (done) => {

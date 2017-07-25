@@ -8,45 +8,49 @@
 
 //ALERTA: Solo utilizar cuando no hay protocolo SSL.
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-
-var ews = Npm.require("ews-javascript-api");
-var ntlmXHR = require("./ntlmXHRApi");
-var ExchangeService = ews.ExchangeService;
-var ExchangeVersion = ews.ExchangeVersion;
-var ExchangeCredentials = ews.ExchangeCredentials;
-var Uri = ews.Uri;
-var CalendarView = ews.CalendarView;
-var DateTime = ews.DateTime;
-var WellKnownFolderName = ews.WellKnownFolderName;
-
+var request = require('request');
+var getToken = require("./getToken");
+var Future = Npm.require('fibers/future');
 
 Meteor.methods({
-	'roomAvailability': function(userId, encKey, rooms, startTime, endTime) {
+	'roomAvailability': function(usuario, rooms, startTime, endTime){
 
-		var user = Meteor.users.findOne(userId);
+		var token = getToken.getToken(usuario);
 
 		for(var i = 0; i < rooms.length; i++){
 
-			var exec = Async.runSync(function (done){
+			console.log(rooms[i]);
 
-				var ntlmXHRApi = new ntlmXHR.ntlmXHRApi(user.username, CryptoJS.AES.decrypt(user.encPass, encKey).toString(CryptoJS.enc.Utf8));
+			var url = 'https://graph.microsoft.com/v1.0/users/' + rooms[i].username + "@" + Meteor.settings.COMPANY_DOMAIN + '/calendarview'
 
-				var exch = new ExchangeService(ExchangeVersion.Exchange2007);
-				exch.XHRApi = ntlmXHRApi;
-		    	exch.Credentials = new ews.ExchangeCredentials("null", "null"); // Evitar error de credenciales.
-		    	exch.Url = new ews.Uri("https://mail.mueblesjamar.com.co/EWS/Exchange.asmx");
+			var options = {
+			  url: url,
+			  headers: {
+			    'Authorization': "Bearer " + token,
+			    'Prefer': 'outlook.timezone = "SA Pacific Standard Time"'
+			  },
+			  qs: {
+			  	StartDateTime: startTime,
+				EndDateTime: endTime,
+				$top: "1"
+			  }
+			}
 
-		    	var view = new CalendarView(DateTime.Parse(startTime), DateTime.Parse(endTime));
+			var exec = Async.runSync(function(done){
 
-		    	exch.FindAppointments(new ews.FolderId(WellKnownFolderName.Calendar, new ews.Mailbox(rooms[i].username + "@mueblesjamar.com.co")), view).then((response) => {
+				request(options, Meteor.bindEnvironment(function(error, response, body){
 
-		    		var items = response.Items;
+					if (!error && response.statusCode == 200) {
 
-		    		done(null, items.length);
-		    	}, function(error){
+						var res = JSON.parse(body);
+						done(null, res.value.length);
+					}
+					else{
 
-		    		done(error);
-		    	});
+						var res = JSON.parse(body);
+						done(new Meteor.Error(response.statusCode, res.error.message), null);
+					}
+				}));
 			});
 
 			if(exec.result == 0){

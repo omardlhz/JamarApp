@@ -87,9 +87,9 @@ Template.roomList.events({
 			}
 		});
 
-		var userId = Meteor.user()._id;
+		var username = Meteor.user().username;
 
-		Meteor.call('monitorEvents', userId, localStorage.getItem("encKey"), roomName,function(error, result) {
+		Meteor.call('monitorEvents', username, roomName,function(error, result) {
 
 			if(result){
 

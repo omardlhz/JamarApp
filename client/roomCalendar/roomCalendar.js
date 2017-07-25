@@ -53,7 +53,7 @@ Template.roomCalendar.events({
 			},
 				titleFormat: 'D/MM/YYYY',
 				defaultView: 'basicWeek',
-				timezone: 'local'
+				timezone: 'America/Bogota'
 		});
 
 		$('#popupCalendar').fullCalendar('removeEvents', event, true);
@@ -99,7 +99,7 @@ Template.roomCalendar.onRendered(function() {
 		},
 			titleFormat: 'D/MM/YYYY',
 			defaultView: 'listDay',
-			timezone: 'local',
+			timezone: 'America/Bogota'
 	});
 
 
@@ -120,8 +120,8 @@ Template.roomCalendar.onRendered(function() {
 
 					id: document._id,
 					title: document.subject,
-					start: document.startTime,
-					end: document.endTime
+					start: new Date(document.startTime),
+					end: new Date(document.endTime)
 				}
 
 				// Agregar el evento al calendario.
@@ -174,7 +174,7 @@ Template.roomCalendar.onRendered(function() {
 	callMonitor();
 
 	// Llamado a creador de subsripción.
-	createSubscription();
+	//createSubscription();
 });
 
 
@@ -184,13 +184,17 @@ Template.roomCalendar.onRendered(function() {
  */
 function callMonitor(){
 
-	var userId = Meteor.user()._id;
+	var username = Meteor.user().username;
 
-	Meteor.call('monitorEvents', userId, localStorage.getItem("encKey"), function(error, result) {
+	Meteor.call('monitorEvents', username, undefined, function(error, result) {
 
 		if(result){
-
+			
 			setTimeout(function(){callMonitor()}, (0.5 * 60000));
+		}
+		else{
+
+			console.log(error);
 		}
 	})
 }
