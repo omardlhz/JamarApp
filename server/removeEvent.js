@@ -4,69 +4,44 @@
  * creado por: Omar De La Hoz
  */
 
-
-//ALERTA: Solo utilizar cuando no hay protocolo SSL.
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-
-var EWS = require("node-ews");
+var request = require('request');
+var getToken = require("./getToken");
 
 Meteor.methods({
-	'removeEvent': function(userId, encKey, eventId, changeKey){
+	'removeEvent': function(usuario, eventId, roomName){
 
-		var user = Meteor.users.findOne(userId);
+		var url = "https://graph.microsoft.com/v1.0/users/" + roomName + "@" + Meteor.settings.COMPANY_DOMAIN + '/events/';
+		
+		var options = {
+		  url: url + eventId,
+		  headers: {
+		    'Authorization': "Bearer " + getToken.getToken(usuario)
+		  }
+		}
 
 		var exec = Async.runSync(function(done){
 
-			var ewsConfig = {
-			  username: user.username,
-			  password: CryptoJS.AES.decrypt(user.encPass, encKey).toString(CryptoJS.enc.Utf8),
-			  host: 'https://mail.mueblesjamar.com.co/'
-			};
+			request.del(options, Meteor.bindEnvironment(function(error, response, body){
 
-			var ewsSoapHeader = {
-			  't:RequestServerVersion': {
-			    attributes: {
-			      Version: "Exchange2007_SP1"
-			    }
-			  }
-			};
-
-			var ews = new EWS(ewsConfig);
-
-			var ewsFunction = 'DeleteItem';
-
-			var ewsArgs = {
-				"attributes":{
-					"DeleteType":"MoveToDeletedItems",
-					"SendMeetingCancellations":"SendToAllAndSaveCopy"
-				},
-				"ItemIds":{
-					"ItemId":{
-						"attributes":{
-							"Id": eventId,
-							"ChangeKey": changeKey
-						}
-					}
-				}
-			}
-
-			ews.run(ewsFunction, ewsArgs, ewsSoapHeader).then(result => {
-				
-			    done(null);
-			}).catch(err => {
-
-				done(err.stack);
-			});
+				if (!error && response.statusCode === 204){
+					
+			  		done(null, true);
+			  	}
+			  	else{
+			  		
+			  		done(new Meteor.Error(405, "Error al Eliminar."), null);
+			  	}
+			}));
 		});
 
-		if(!exec.error){
+		if(exec.result){
 
-			return true;
+			return exec.result;
 		}
 		else{
 
-			console.log(exec.error);
-			return false;
+			return exec.error;
 		}
 	}
 });

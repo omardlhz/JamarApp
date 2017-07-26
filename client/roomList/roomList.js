@@ -79,6 +79,7 @@ Template.roomList.events({
 				$("#eventTime").text(startTime + "-" + endTime);
 				$("#cancelEvent").attr("_id", calEvent.id);
 				$("#cancelEvent").attr("changeKey", calEvent.changeKey);
+				$("#cancelEvent").attr("roomName", roomName)
 
 				// Verificar si se debe mostrar el botón de cancelar evento.
 				// (Solo debe ser mostrado a administrador)
@@ -107,10 +108,11 @@ Template.roomList.events({
 
 		var eventId = $(e.currentTarget).attr("_id");
 		var changeKey = $(e.currentTarget).attr("changeKey");
-		var userId = Meteor.user()._id;
+		var roomName = $(e.currentTarget).attr("roomName");
+		var username = Meteor.user().username;
 
 		Session.set("loading", true);
-		Meteor.call('removeEvent', userId, localStorage.getItem("encKey"), eventId, changeKey,function(error, result) {
+		Meteor.call('removeEvent', username, eventId, roomName, function(error, result) {
 
 			Session.set("loading", undefined);
 
