@@ -228,10 +228,9 @@ function createAppointment(appointmentData){
 
 	Session.set("loading", true);
 
-	var userId = Meteor.user()._id;
-	var encKey = localStorage.getItem("encKey");
+	var username = Meteor.user().username;
 
-	Meteor.call('createAppointment', userId, encKey, appointmentData, function(error, result){
+	Meteor.call('createAppointment', username, appointmentData, function(error, result){
 
 		Session.set("loading", undefined);
 

@@ -4,115 +4,65 @@
  * creado por: Omar De La Hoz (omar.dlhz@hotmail.com)
  */
 
-//ALERTA: Solo utilizar cuando no hay protocolo SSL.
+ //ALERTA: Solo utilizar cuando no hay protocolo SSL.
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-
-var EWS = require("node-ews");
-
+var request = require('request');
+var getToken = require("./getToken");
+var Future = Npm.require('fibers/future');
 
 Meteor.methods({
-	'createAppointment': function(userId, encKey, appointmentData) {
+	'createAppointment': function(usuario, appointmentData){
 
-		var user = Meteor.users.findOne(userId);
+		var url = 'https://graph.microsoft.com/v1.0/users/' + usuario + "@" + Meteor.settings.COMPANY_DOMAIN + '/calendar/events';
 
-		var exec = Async.runSync(function (done){
+		var options = {
+		  url: url,
+		  headers: {
+		    'Authorization': "Bearer " + getToken.getToken(usuario)
+		  },
+		  json: {
+		  	"Subject": appointmentData.Subject,
+		  	"Start": {
+		  		"DateTime": appointmentData.Start,
+		  		"TimeZone": "SA Pacific Standard Time"
+		  	},
+		  	"End": {
+		  		"DateTime": appointmentData.End,
+		  		"TimeZone": "SA Pacific Standard Time"
+		  	},
+		  	"Location": { 
+		  		"locationEmailAddress": appointmentData.Location
+		  	}
+		  }
+		}
 
-			var ewsConfig = {
-			  username: user.username,
-			  password: CryptoJS.AES.decrypt(user.encPass, encKey).toString(CryptoJS.enc.Utf8),
-			  host: 'https://mail.mueblesjamar.com.co/'
-			};
+		if(appointmentData.Attendees.length > 0){
 
-			var ewsSoapHeader = {
-			  't:RequestServerVersion': {
-			    attributes: {
-			      Version: "Exchange2007"
-			    }
-			  }
-			};
+			options.form.attendees = buildAttendees(appointmentData.Attendees);
+		}
 
-			var ews = new EWS(ewsConfig);
+		var exec = Async.runSync(function(done){
 
-			var ewsFunction = 'CreateItem';
+			request.post(options, Meteor.bindEnvironment(function(error, response, body){
 
-			// define ews api function args
-			var ewsArgs = {
-			  "attributes" : {
-			    "SendMeetingInvitations" : "SendToAllAndSaveCopy"
-			  },
-			  "Items" : {
-			    "CalendarItem" : {
-			      "Subject" : appointmentData.Subject,
-			      "Start" : appointmentData.Start,
-			      "End" : appointmentData.End
-			    }
-			  }
-			};
-
-			// Si la reunión tiene invitados, agregarlos al evento.
-			if(appointmentData.Attendees.length > 0){
-
-				ewsArgs.Items.CalendarItem.RequiredAttendees = {
-
-					$xml: buildAttendees(appointmentData.Attendees)
-				}
-			}
-
-
-			// Agregar ubicación de reunión al evento.
-			ewsArgs.Items.CalendarItem.Resources = {
-
-				"Attendee": {
-			      	"Mailbox": {
-			      		"EmailAddress": appointmentData.Location
-			      	}
-			    }
-			}
-
-			// Hacer petición a servidor EWS.
-			ews.run(ewsFunction, ewsArgs, ewsSoapHeader).then(result => {
-
-			    done(null);
-			}).catch(err => {
-
-				done(err.stack);
-			});
+				console.log(response);
+				done(null, true);
+			}));
 		});
-
-		if(!exec.error){
-
-			return true;
-		}
-		else{
-
-			console.log(exec.error);
-
-			return false;
-		}
 	}
 });
 
-
-/**
- * Crea el objeto XML de los invitados a la reunión.
- *
- * @param      {string}  attendees  Invitados a la reunión.
- * @return     {string}  XML de invitados.
- */
 function buildAttendees(attendees){
 
-	var attendString = "";
+	var attendArray = [];
 
 	for(var i = 0; i < attendees.length; i++){
 
-		attendString += "<t:Attendee>";
-		attendString += "<t:Mailbox>";
-		attendString += "<t:EmailAddress>";
-		attendString += attendees[i] + "@mueblesjamar.com.co";
-		attendString += "</t:EmailAddress>";
-		attendString += "</t:Mailbox>";
-		attendString += "</t:Attendee>";
+		attendArray.push({
+			"emailAddress": { "address": attendees[i] + "@" + Meteor.settings.COMPANY_DOMAIN },
+			"type": "required"
+		});
 	}
 
-	return attendString;
+	return attendArray;
 }

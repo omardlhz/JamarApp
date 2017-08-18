@@ -46,7 +46,7 @@ function getToken(username){
 				}});
 			}).run();
 
-			return result.token.access_token;
+			return String(result.token.access_token);
 		});
 	}
 	else{

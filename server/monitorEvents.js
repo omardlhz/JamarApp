@@ -109,6 +109,7 @@ Meteor.methods({
 
 				var res = JSON.parse(body);
 				future.throw(new Meteor.Error(response.statusCode, res.error.message));
+				console.log(res.error.message);
 			}
 		}));
 

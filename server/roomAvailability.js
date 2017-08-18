@@ -19,8 +19,6 @@ Meteor.methods({
 
 		for(var i = 0; i < rooms.length; i++){
 
-			console.log(rooms[i]);
-
 			var url = 'https://graph.microsoft.com/v1.0/users/' + rooms[i].username + "@" + Meteor.settings.COMPANY_DOMAIN + '/calendarview'
 
 			var options = {
