@@ -15,7 +15,8 @@ var credentials = {
 // The scopes the app requires
 var scopes = [ 'openid', 'User.Read', 'Calendars.ReadWrite','Calendars.ReadWrite.Shared', 'offline_access'];
 var oauth2 = require('simple-oauth2').create(credentials);
-var redirectUri = 'http://localhost:3000/authorize';
+var redirectUri = Meteor.absoluteUrl() + 'authorize';
+console.log(redirectUri);
 Future = Npm.require('fibers/future');
 Fiber = Npm.require('fibers');
 var microsoftGraph = require("@microsoft/microsoft-graph-client");
