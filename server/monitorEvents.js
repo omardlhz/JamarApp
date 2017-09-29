@@ -51,7 +51,7 @@ Meteor.methods({
 				var events = res.value;
 
 				for(var i = 0; i < events.length; i++){
-
+					
 					var eventId = events[i].id;
 					var subject = (events[i].subject) ? events[i].subject : "Sin Asunto";
 					var startTime = events[i].start.dateTime;

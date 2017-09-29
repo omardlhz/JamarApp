@@ -15,6 +15,7 @@ Meteor.methods({
 
 		var url = 'https://graph.microsoft.com/v1.0/users/' + usuario + "@" + Meteor.settings.COMPANY_DOMAIN + '/calendar/events';
 
+		
 		var options = {
 		  url: url,
 		  headers: {
@@ -30,29 +31,39 @@ Meteor.methods({
 		  		"DateTime": appointmentData.End,
 		  		"TimeZone": "SA Pacific Standard Time"
 		  	},
-		  	"Location": { 
-		  		"locationEmailAddress": appointmentData.Location
+		  	"Location": {
+		  		"displayName": appointmentData.Location,
+		  		"locationEmailAddress": String(appointmentData.Location)
 		  	}
 		  }
 		}
 
-		if(appointmentData.Attendees.length > 0){
-
-			options.form.attendees = buildAttendees(appointmentData.Attendees);
-		}
 
 		var exec = Async.runSync(function(done){
 
+			if(appointmentData.Attendees.length >= 0){
+
+				options.json.Attendees = buildAttendees(appointmentData.Attendees, appointmentData.Location);
+			}
+
 			request.post(options, Meteor.bindEnvironment(function(error, response, body){
 
-				console.log(response);
 				done(null, true);
 			}));
 		});
+
+		if(exec.result == true){
+
+			return true;
+		}
+		else{
+
+			return false;
+		}
 	}
 });
 
-function buildAttendees(attendees){
+function buildAttendees(attendees, room){
 
 	var attendArray = [];
 
@@ -63,6 +74,11 @@ function buildAttendees(attendees){
 			"type": "required"
 		});
 	}
+
+	attendArray.push({
+		"emailAddress": { "address": room},
+		"type": "Resource"
+	});
 
 	return attendArray;
 }
